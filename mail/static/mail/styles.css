@@ -14,10 +14,10 @@ textarea {
 .id{
     float: left;
     width: 33%;
+    font-weight: bold;
 }
-.subject{
 
-}
 .date{
     float: right;
+    color: gray;
 }
