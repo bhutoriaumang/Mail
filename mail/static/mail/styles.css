@@ -1,3 +1,23 @@
 textarea {
     min-height: 400px;
 }
+
+.mail{
+    border: 2px solid black;
+    margin: 5px;
+}
+
+.id,.subject,.date{
+    display: inline-block;
+    padding: 5px;
+}
+.id{
+    float: left;
+    width: 33%;
+}
+.subject{
+
+}
+.date{
+    float: right;
+}
