@@ -42,7 +42,7 @@ function compose_email() {
 
 
 function load_mailbox(mailbox) {
-  
+
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#current-mail').style.display = 'none';
@@ -59,6 +59,10 @@ function load_mailbox(mailbox) {
         const iddiv = document.createElement('div');
         const datediv = document.createElement('div');
         const subjectdiv = document.createElement('div');
+        const id = document.createElement('input');
+        id.setAttribute('type','text');
+        id.setAttribute('value',email);
+        id.setAttribute('hidden','true');
         maindiv.classList.add('mail');
         iddiv.classList.add('id');
         subjectdiv.classList.add('subject');
@@ -69,11 +73,14 @@ function load_mailbox(mailbox) {
         maindiv.append(iddiv);
         maindiv.append(subjectdiv);
         maindiv.append(datediv);
-        maindiv.addEventListener('click', function(){
-          current_mail(emails[email]);
-        })
+        maindiv.append(id);
         temp.append(maindiv);
       }
+        document.querySelectorAll('.mail').forEach(item =>{
+          item.addEventListener('click', event =>{
+            current_mail(emails[item.querySelector('input').value]);
+          });
+        });
     });
   }
   else if(mailbox == 'sent'){
@@ -87,6 +94,10 @@ function load_mailbox(mailbox) {
         const iddiv = document.createElement('div');
         const datediv = document.createElement('div');
         const subjectdiv = document.createElement('div');
+        const id = document.createElement('input');
+        id.setAttribute('type','text');
+        id.setAttribute('value',email);
+        id.setAttribute('hidden','true');
         maindiv.classList.add('mail');
         iddiv.classList.add('id');
         subjectdiv.classList.add('subject');
@@ -97,11 +108,14 @@ function load_mailbox(mailbox) {
         maindiv.append(iddiv);
         maindiv.append(subjectdiv);
         maindiv.append(datediv);
-        maindiv.addEventListener('click', function(){
-          current_mail(emails[email]);
-        })
+        maindiv.append(id);
         temp.append(maindiv);
       }
+      document.querySelectorAll('.mail').forEach(item =>{
+        item.addEventListener('click', event =>{
+          current_mail(emails[item.querySelector('input').value]);
+        });
+      });
     });
   }
 
@@ -129,9 +143,23 @@ function current_mail(email){
     document.querySelector('#compose-recipients').disabled = true;
     compose_email();
   };
+  const archiveButton = document.createElement('button');
+  archiveButton.className = 'btn btn-outline-primary';
+  archiveButton.innerHTML = "Archive";
+  archiveButton.onclick = () => {
+    fetch(`/emails/${email.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+          archived: true
+      })
+    })
+    document.location.reload(true);
+    load_mailbox('inbox');
+  };
 
   details.innerHTML = `<b>From:</b> ${email.sender} <br> <b>To:</b> ${email.recipients} <br> <b>Subject:</b> ${email.subject} <br> <b>Timestamp:</b> <br> ${email.timestamp} <br>`;
   details.append(replyButton);
+  details.append(archiveButton);
   body.innerHTML = `<hr> ${email.body}`;
   temp.append(details);
   temp.append(body);
