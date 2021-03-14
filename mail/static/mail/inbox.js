@@ -118,6 +118,41 @@ function load_mailbox(mailbox) {
       });
     });
   }
+  else if(mailbox == 'archive'){
+    fetch('/emails/archive')
+    .then(response => response.json())
+    .then(emails => {
+      // Print emails
+      const temp = document.querySelector('#emails-view');
+      for(var email in emails){
+        const maindiv = document.createElement('div');
+        const iddiv = document.createElement('div');
+        const datediv = document.createElement('div');
+        const subjectdiv = document.createElement('div');
+        const id = document.createElement('input');
+        id.setAttribute('type','text');
+        id.setAttribute('value',email);
+        id.setAttribute('hidden','true');
+        maindiv.classList.add('mail');
+        iddiv.classList.add('id');
+        subjectdiv.classList.add('subject');
+        datediv.classList.add('date');
+        iddiv.innerHTML = emails[email].recipients;
+        datediv.innerHTML = emails[email].timestamp;
+        subjectdiv.innerHTML = emails[email].subject;
+        maindiv.append(iddiv);
+        maindiv.append(subjectdiv);
+        maindiv.append(datediv);
+        maindiv.append(id);
+        temp.append(maindiv);
+      }
+      document.querySelectorAll('.mail').forEach(item =>{
+        item.addEventListener('click', event =>{
+          current_mail(emails[item.querySelector('input').value]);
+        });
+      });
+    });
+  }
 
   
   // Show the mailbox name
